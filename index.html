@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rota Serra e Mar</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black:   #0d0d0d;
+    --asphalt: #1a1a1a;
+    --charcoal:#2a2a2a;
+    --orange:  #e8622a;
+    --amber:   #f0a833;
+    --cream:   #f2ede6;
+    --muted:   #888;
+    --card-bg: #1e1e1e;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--cream);
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative;
+    height: 100svh;
+    min-height: 520px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 3rem 2rem;
+    overflow: hidden;
+  }
+
+  .hero-road {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(to bottom, transparent 40%, rgba(13,13,13,0.92) 80%, var(--black) 100%),
+      url('https://turismo.campoalegre.sc.gov.br/uploads/sites/66/2022/10/3099807-scaled.jpg?w=1600&q=80') center/cover no-repeat;
+  }
+
+  /* animated dashed road line */
+  .road-line {
+    position: absolute;
+    bottom: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 60%;
+    background: repeating-linear-gradient(
+      to top,
+      var(--orange) 0px, var(--orange) 20px,
+      transparent 20px, transparent 40px
+    );
+    opacity: 0.55;
+    animation: road-scroll 1.2s linear infinite;
+  }
+
+  @keyframes road-scroll {
+    from { background-position: 0 0; }
+    to   { background-position: 0 40px; }
+  }
+
+  .hero-eyebrow {
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.25em;
+    color: var(--orange);
+    text-transform: uppercase;
+    position: relative;
+    margin-bottom: 0.75rem;
+  }
+
+  .hero h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3.5rem, 10vw, 7.5rem);
+    line-height: 0.95;
+    letter-spacing: 0.01em;
+    position: relative;
+    max-width: 18ch;
+  }
+
+  .hero h1 span { color: var(--orange); }
+
+  .hero-meta {
+    position: relative;
+    margin-top: 1.5rem;
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+
+  .hero-stat {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .hero-stat strong {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.6rem;
+    color: var(--amber);
+    line-height: 1;
+  }
+
+  .hero-stat small {
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 1.5rem;
+    right: 2rem;
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .scroll-hint::after {
+    content: '';
+    display: block;
+    width: 1px;
+    height: 40px;
+    background: var(--orange);
+    animation: grow 1.5s ease-in-out infinite;
+  }
+
+  @keyframes grow {
+    0%, 100% { transform: scaleY(0.3); opacity: 0.3; }
+    50%       { transform: scaleY(1);   opacity: 1; }
+  }
+
+  /* ── SECTION WRAPPER ── */
+  .section {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 4rem 1.5rem;
+  }
+
+  .section-label {
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    color: var(--orange);
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2rem, 5vw, 3rem);
+    line-height: 1;
+    margin-bottom: 2.5rem;
+    color: var(--cream);
+  }
+
+  /* ── MAP ── */
+  .map-wrap {
+    border-radius: 4px;
+    overflow: hidden;
+    border: 1px solid var(--charcoal);
+    aspect-ratio: 16/9;
+  }
+
+  .map-wrap iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+  }
+
+  /* ── TIMELINE / STOPS ── */
+  .stops {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .stop {
+    display: grid;
+    grid-template-columns: 3rem 1fr;
+    gap: 0 1.25rem;
+    position: relative;
+  }
+
+  /* vertical line between stops */
+  .stop:not(:last-child) .stop-line {
+    position: absolute;
+    left: 1.4rem;
+    top: 2.5rem;
+    bottom: -2rem;
+    width: 1px;
+    background: linear-gradient(to bottom, var(--orange) 0%, transparent 100%);
+    opacity: 0.3;
+  }
+
+  .stop-dot {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 0.2rem;
+    z-index: 1;
+  }
+
+  .dot {
+    width: 2.4rem;
+    height: 2.4rem;
+    border-radius: 50%;
+    background: var(--charcoal);
+    border: 2px solid var(--orange);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1rem;
+    color: var(--orange);
+    flex-shrink: 0;
+  }
+
+  .stop-card {
+    background: var(--card-bg);
+    border: 1px solid var(--charcoal);
+    border-left: 3px solid var(--orange);
+    border-radius: 0 4px 4px 0;
+    margin-bottom: 1.75rem;
+    transition: border-color 0.2s;
+    overflow: hidden;
+  }
+
+  .stop-card:hover {
+    border-color: var(--amber);
+    border-left-color: var(--amber);
+  }
+
+  .stop-card-photo {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    display: block;
+    filter: brightness(0.88) saturate(1.1);
+    transition: filter 0.3s;
+  }
+
+  .stop-card:hover .stop-card-photo {
+    filter: brightness(1) saturate(1.2);
+  }
+
+  .stop-card-body {
+    padding: 1.25rem 1.5rem;
+  }
+
+  @media (max-width: 600px) {
+    .stop-card-photo { height: 140px; }
+    .stop-card-body  { padding: 1rem 1.1rem; }
+  }
+
+  .stop-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.75rem;
+  }
+
+  .stop-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.45rem;
+    line-height: 1;
+    color: var(--cream);
+  }
+
+  .stop-time {
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.75rem;
+    color: var(--amber);
+    white-space: nowrap;
+    letter-spacing: 0.05em;
+  }
+
+  .stop-location {
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.65rem;
+  }
+
+  .stop-rating {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.8rem;
+    color: var(--amber);
+    margin-bottom: 0.75rem;
+  }
+
+  .stop-desc {
+    font-size: 0.9rem;
+    color: #b5b0a8;
+    line-height: 1.65;
+  }
+
+  .stop-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.9rem;
+  }
+
+  .tag {
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.2rem 0.55rem;
+    border-radius: 2px;
+    border: 1px solid var(--charcoal);
+    color: var(--muted);
+  }
+
+  .tag.warn {
+    border-color: #7a3a1a;
+    color: #e07040;
+  }
+
+  /* ── ALERTS ── */
+  .alerts {
+    background: var(--asphalt);
+    border-top: 1px solid var(--charcoal);
+    border-bottom: 1px solid var(--charcoal);
+  }
+
+  .alert-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .alert-item {
+    display: flex;
+    gap: 0.9rem;
+    align-items: flex-start;
+  }
+
+  .alert-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+  }
+
+  .alert-item strong {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--cream);
+    margin-bottom: 0.2rem;
+  }
+
+  .alert-item p {
+    font-size: 0.8rem;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--charcoal);
+    padding: 2rem 1.5rem;
+    text-align: center;
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.72rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+  }
+
+  footer strong { color: var(--orange); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 600px) {
+    .hero { padding: 2rem 1.25rem; }
+    .hero-meta { gap: 1.25rem; }
+    .section { padding: 3rem 1.25rem; }
+    .stop-card-body { padding: 1rem 1.1rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .road-line, .scroll-hint::after { animation: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── HERO ── -->
+<header class="hero">
+  <div class="hero-road"></div>
+  <div class="road-line"></div>
+
+  <p class="hero-eyebrow">Rota circular · Saindo de Curitiba</p>
+  <h1>Rota<br><span>Serra</span><br>&amp; Mar</h1>
+
+  <div class="hero-meta">
+    <div class="hero-stat">
+      <strong>~450 km</strong>
+      <small>Distância total</small>
+    </div>
+    <div class="hero-stat">
+      <strong>5 paradas</strong>
+      <small>Pontos de interesse</small>
+    </div>
+    <div class="hero-stat">
+      <strong>1 dia</strong>
+      <small>Sáb ou Dom</small>
+    </div>
+    <div class="hero-stat">
+      <strong>07:00</strong>
+      <small>Hora de saída ideal</small>
+    </div>
+  </div>
+
+  <div class="scroll-hint">role para ver</div>
+</header>
+
+<!-- ── MAPA ── -->
+<div style="background: var(--asphalt); padding: 3rem 1.5rem;">
+  <div style="max-width:900px; margin:0 auto;">
+    <p class="section-label">Visão geral</p>
+    <p class="section-title" style="margin-bottom:1.5rem;">O Trajeto Completo</p>
+    <div class="map-wrap">
+      <!--<iframe
+        src="https://www.google.com/maps/embed?pb=!1m76!1m8!1m3!1d900466!2d-49.0717934!3d-25.851823!3m2!1i1024!2i768!4f13.1!4m65!3e0!4m5!1s0x94dce5ac95967e47%3A0xa2b73031803cab81!2sCristo+Rei%2C+Curitiba+-+PR!3m2!1d-25.4330754!2d-49.2441591!4m5!1s0x94dbefebceeed5cb%3A0x2ea884042fe82657!2sPraia+Mansa+de+Caiob%C3%A1%2C+Paran%C3%A1!3m2!1d-25.8496803!2d-48.5452995!4m5!1s0x94dc113a637000a9%3A0xf037b62e3a9c205e!2sPonte+Invertida+-+Rio+S%C3%A3o+Jo%C3%A3o%2C+Guaratuba+-+PR!3m2!1d-25.9774177!2d-48.8832305!4m5!1s0x94dc1d86c6816183%3A0xe89bfd820c3a7feb!2sBistr%C3%B4+Casa+da+Doce+Bruxinha%2C+Garuva+-+SC!3m2!1d-26.1217039!2d-48.9377135!4m5!1s0x94dea006633631e1%3A0x298d60ad84c9751b!2sMirante+Serra+Dona+Francisca%2C+Joinville+-+SC!3m2!1d-26.1941122!2d-49.0335237!4m5!1s0x94dc49144ae88c97%3A0x9737b9cf413c8a64!2sLagoa+Azul%2C+Tijucas+do+Sul+-+PR!3m2!1d-25.9366616!2d-49.2176631!4m5!1s0x94dce5ac95967e47%3A0xa2b73031803cab81!2sCristo+Rei%2C+Curitiba+-+PR!3m2!1d-25.4330754!2d-49.2441591!5e0!3m2!1spt-BR!2sbr!4v1718200000001"
+        allowfullscreen
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade">
+      </iframe>-->
+      <iframe
+        width="100%"
+        height="600"
+        style="border:0"
+        loading="lazy"
+        allowfullscreen
+        src="https://www.google.com/maps/embed?pb=!1m58!1m12!1m3!1d1100140.6708969532!2d-49.568947157154824!3d-25.826033584612727!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m43!3e0!4m5!1s0x94dce5ac95967e47%3A0xa2b73031803cab81!2sCristo%20Rei%2C%20Curitiba%20-%20PR%2C%2082590-300!3m2!1d-25.4330754!2d-49.2441591!4m5!1s0x94dbefebceeed5cb%3A0x2ea884042fe82657!2sPraia%20Mansa%20de%20Caioba%2C%20Paran%C3%A1%2C%2083260-000!3m2!1d-25.8496803!2d-48.5452995!4m5!1s0x94dc113a637000a9%3A0xf037b62e3a9c205e!2sPonte%20Invertida%20-%20Rio%20S%C3%A3o%20Jo%C3%A3o%20-%20Guaratuba-PR%2C%20Pte.%20invertida%20do%20Rio%20S%C3%A3o%20Jo%C3%A3o%20-%20Pedra%20Branca%20do%20Araraquara%2C%20Guaratuba%20-%20PR%2C%2083280-000!3m2!1d-25.9774177!2d-48.883230499999996!4m5!1s0x94dc1d86c6816183%3A0xe89bfd820c3a7feb!2sBistr%C3%B4%20Casa%20da%20Doce%20Bruxinha%2C%20Estr.%20Rio%20Bonito%2C%205570%20-%20Serra%20do%20Mar%2C%20Garuva%20-%20SC%2C%2089239-800!3m2!1d-26.1217039!2d-48.9377135!4m5!1s0x94dea006633631e1%3A0x298d60ad84c9751b!2sMirante%20da%20Serra%20Dona%20Francisca%2C%20SC-418%2C%20km%2016%20-%20Pirabeiraba%2C%20Joinville%20-%20SC%2C%2089239-400!3m2!1d-26.1941122!2d-49.033523699999996!4m5!1s0x94dc49144ae88c97%3A0x9737b9cf413c8a64!2sLagoa%20Azul%2C%20R.%20das%20Porteiras%20-%20Lagoinha%2C%20Tijucas%20do%20Sul%20-%20PR%2C%2083190-000!3m2!1d-25.936661599999997!2d-49.217663099999996!4m5!1s0x94dce5ac95967e47%3A0xa2b73031803cab81!2sCristo%20Rei%2C%20Curitiba%20-%20PR%2C%2082590-300!3m2!1d-25.4330754!2d-49.2441591!5e1!3m2!1spt-BR!2sbr!4v1781305294855!5m2!1spt-BR!2sbr" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+      </iframe>
+    </div>
+  </div>
+</div>
+
+<!-- ── PARADAS ── -->
+<section class="section">
+  <p class="section-label">As paradas</p>
+  <p class="section-title">Roteiro do Dia</p>
+
+  <div class="stops">
+
+    <!-- 0 – Saída -->
+    <div class="stop">
+      <div class="stop-line"></div>
+      <div class="stop-dot"><div class="dot">🏠</div></div>
+      <div class="stop-card">
+        <div class="stop-card-body">
+          <div class="stop-header">
+            <div class="stop-name">Saída — Cristo Rei</div>
+            <div class="stop-time">▶ 07:00</div>
+          </div>
+          <div class="stop-location">Curitiba · PR</div>
+          <p class="stop-desc">Parta cedo para aproveitar a luz da manhã na descida da serra. Tanque cheio e pneus calibrados. A BR-277 está movimentada nos fins de semana — considere ir pela PR-508 para variar.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 1 – Praia Mansa -->
+    <div class="stop">
+      <div class="stop-line"></div>
+      <div class="stop-dot"><div class="dot">1</div></div>
+      <div class="stop-card">
+        <img class="stop-card-photo" src="https://www.parana.pr.gov.br/sites/default/arquivos_restritos/files/imagem/2026-04/still_2026-04-09_191143_1.23.1.jpg" onerror="this.src='https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=900&q=80'" alt="Praia Mansa de Caiobá">
+        <div class="stop-card-body">
+          <div class="stop-header">
+            <div class="stop-name">Praia Mansa de Caiobá</div>
+            <div class="stop-time">≈ 09:00</div>
+          </div>
+          <div class="stop-location">Matinhos · PR · ≈ 100 km de Curitiba</div>
+          <div class="stop-rating">★ 4.7 <span style="color:var(--muted);">(5.832 avaliações)</span></div>
+          <p class="stop-desc">A praia mais tranquila de Matinhos — boa pedida para o toque de litoral sem enfrentar o caos das praias principais. Estacionamento para moto facilmente encontrado na orla. Parada de 30–45 min para esticar as pernas, tomar um café e sentir a maresia.</p>
+          <div class="stop-tags">
+            <span class="tag">Litoral</span>
+            <span class="tag">Foto</span>
+            <span class="tag">Café da manhã</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 – Ponte Invertida -->
+    <div class="stop">
+      <div class="stop-line"></div>
+      <div class="stop-dot"><div class="dot">2</div></div>
+      <div class="stop-card">
+        <img class="stop-card-photo" src="https://img.nsctotal.com.br/wp-content/uploads/2026/03/ponte-invertida-entre-garuva-e-guaratuba.jpg" onerror="this.src='https://images.unsplash.com/photo-1501854140801-50d01698950b?w=900&q=80'" alt="Ponte Invertida Rio São João Guaratuba">
+        <div class="stop-card-body">
+          <div class="stop-header">
+            <div class="stop-name">Ponte Invertida — Rio São João</div>
+            <div class="stop-time">≈ 10:30</div>
+          </div>
+          <div class="stop-location">Guaratuba · PR · interior</div>
+          <div class="stop-rating">★ 4.8 <span style="color:var(--muted);">(1.848 avaliações)</span></div>
+          <p class="stop-desc">Uma curiosidade arquitetônica única — uma ponte histórica que parece estar de cabeça para baixo refletida no rio. Foge completamente do roteiro óbvio do litoral. Ótimo ponto fotográfico. O acesso pelo interior de Guaratuba tem estradinha de terra curta.</p>
+          <div class="stop-tags">
+            <span class="tag">Turismo histórico</span>
+            <span class="tag">Foto</span>
+            <span class="tag">Abre 08h–17h</span>
+            <span class="tag warn">⚠ Trecho de terra</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 – Bruxinha -->
+    <div class="stop">
+      <div class="stop-line"></div>
+      <div class="stop-dot"><div class="dot">3</div></div>
+      <div class="stop-card">
+        <img class="stop-card-photo" src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/30/26/c6/7c/entrada-da-casa-da-doce.jpg" onerror="this.src='https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=900&q=80'" alt="Bistrô Casa da Doce Bruxinha">
+        <div class="stop-card-body">
+          <div class="stop-header">
+            <div class="stop-name">Bistrô Casa da Doce Bruxinha</div>
+            <div class="stop-time">≈ 12:00</div>
+          </div>
+          <div class="stop-location">Serra do Mar · Garuva · SC</div>
+          <div class="stop-rating">★ 4.8 <span style="color:var(--muted);">(163 avaliações)</span></div>
+          <p class="stop-desc">O ponto alto da rota. Escondido na Serra do Mar, o restaurante tem ambiente arborizado com pássaros coloridos voando ao redor. Buffet muito elogiado, culinária criativa com ingredientes locais. O "Feitiço dos Mares" é o prato mais indicado pelos frequentadores. Reserve mesa com antecedência.</p>
+          <div class="stop-tags">
+            <span class="tag warn">⚠ Só sáb &amp; dom</span>
+            <span class="tag warn">⚠ 11h30–14h30</span>
+            <span class="tag">Reserve: (47) 3427-3403</span>
+            <span class="tag">Almoço especial</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4 – Mirante -->
+    <div class="stop">
+      <div class="stop-line"></div>
+      <div class="stop-dot"><div class="dot">4</div></div>
+      <div class="stop-card">
+        <img class="stop-card-photo" src="https://turismo.campoalegre.sc.gov.br/uploads/sites/66/2022/10/3099807-scaled.jpg" onerror="this.src='https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=900&q=80'" alt="Mirante Serra Dona Francisca">
+        <div class="stop-card-body">
+          <div class="stop-header">
+            <div class="stop-name">Mirante Serra Dona Francisca</div>
+            <div class="stop-time">≈ 14:00</div>
+          </div>
+          <div class="stop-location">SC-418, km 16 · Joinville · SC</div>
+          <div class="stop-rating">★ 4.7 <span style="color:var(--muted);">(5.381 avaliações)</span></div>
+          <p class="stop-desc">Um dos mirantes mais espetaculares do Sul do Brasil. A estrada da SC-418 em si já é a atração — curvas fechadas e declives com visual de tirar o fôlego. Aberto 24h. Exige concentração total na condução: neblina frequente, pista molhada e curvas cegas.</p>
+          <div class="stop-tags">
+            <span class="tag">Vista panorâmica</span>
+            <span class="tag">Foto</span>
+            <span class="tag">Aberto 24h</span>
+            <span class="tag warn">⚠ Curvas exigentes</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5 – Lagoa Azul -->
+    <div class="stop">
+      <div class="stop-line"></div>
+      <div class="stop-dot"><div class="dot">5</div></div>
+      <div class="stop-card">
+        <img class="stop-card-photo" src="https://s0.wklcdn.com/image_116/3483588/60935609/40586577Master.jpg" onerror="this.src='https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=900&q=80'" alt="Mirante Serra Dona Francisca">
+        <div class="stop-card-body">
+          <div class="stop-header">
+            <div class="stop-name">Lagoa Azul</div>
+            <div class="stop-time">≈ 16:00</div>
+          </div>
+        <div class="stop-location">Lagoinha · Tijucas do Sul · PR</div>
+        <div class="stop-rating">★ 4.5 <span style="color:var(--muted);">(110 avaliações)</span></div>
+        <p class="stop-desc">Lagoa com água esverdeada característica do caulim no fundo — visualmente é um contraste lindo com a vegetação ao redor. Ótima para fotos ao entardecer antes de voltar. Sem infraestrutura no local, acesso informal. O fundo de argila torna o banho perigoso — aprecie de longe.</p>
+        <div class="stop-tags">
+          <span class="tag">Natureza</span>
+          <span class="tag">Foto</span>
+          <span class="tag warn">⚠ Sem estrutura</span>
+          <span class="tag warn">⚠ Não nadar</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6 – Volta -->
+    <div class="stop">
+      <div class="stop-dot"><div class="dot">🏠</div></div>
+      <div class="stop-card">
+        <div class="stop-header">
+          <div class="stop-name">Retorno — Cristo Rei</div>
+          <div class="stop-time">≈ 18:00</div>
+        </div>
+        <div class="stop-location">Curitiba · PR · via Tijucas do Sul</div>
+        <p class="stop-desc">Retorno tranquilo pela PR-281 via Tijucas do Sul. Trecho de serra com curvas — atenção no fim do dia, especialmente se houver chuva ou neblina. Previsão de chegada ao entardecer.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── ALERTS ── -->
+<div class="alerts">
+  <div class="section">
+    <p class="section-label">Antes de sair</p>
+    <p class="section-title">Atenção na Estrada</p>
+    <div class="alert-grid">
+      <div class="alert-item">
+        <div class="alert-icon">📅</div>
+        <div>
+          <strong>Só funciona no fim de semana</strong>
+          <p>A Bruxinha abre apenas sábados e domingos. Toda a rota foi planejada para ser feita em um desses dias.</p>
+        </div>
+      </div>
+      <div class="alert-item">
+        <div class="alert-icon">📞</div>
+        <div>
+          <strong>Reserve o almoço</strong>
+          <p>Casa da Doce Bruxinha: (47) 3427-3403. Faça a reserva com pelo menos 2 dias de antecedência.</p>
+        </div>
+      </div>
+      <div class="alert-item">
+        <div class="alert-icon">⛽</div>
+        <div>
+          <strong>Abasteça em Garuva ou Joinville</strong>
+          <p>O trecho entre a Ponte Invertida e a Serra Dona Francisca tem poucos postos. Não arrisque no reserva.</p>
+        </div>
+      </div>
+      <div class="alert-item">
+        <div class="alert-icon">🌧️</div>
+        <div>
+          <strong>Serra + chuva = risco</strong>
+          <p>A SC-418 (Serra Dona Francisca) tem curvas cegas e piso molhado frequente. Cheque a previsão antes de sair.</p>
+        </div>
+      </div>
+      <div class="alert-item">
+        <div class="alert-icon">🏊</div>
+        <div>
+          <strong>Lagoa Azul: só fotos</strong>
+          <p>O fundo de argila/caulim cria bolsões de sucção. A lagoa é linda para admirar, perigosa para nadar.</p>
+        </div>
+      </div>
+      <div class="alert-item">
+        <div class="alert-icon">⏱️</div>
+        <div>
+          <strong>Saia às 07h no máximo</strong>
+          <p>Para chegar à Bruxinha até as 12h30 e ter tempo confortável em todas as paradas antes de escurecer.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <p>Rota planejada com ❤️ · <strong>~450 km</strong> de experiências entre Curitiba, litoral do Paraná e Serra de SC</p>
+  <p style="margin-top:0.5rem; font-size:0.62rem;">Abra no Google Maps → <strong>maps.app.goo.gl/kKDFNpbFvYmy8LYo8</strong></p>
+</footer>
+
+</body>
+</html>
